@@ -1,0 +1,118 @@
+// ConsoleApplication2.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
+//
+
+#include <iostream>
+#include <stdio.h>
+#define _CRT_SECURE_NO_WARNINGS
+#pragma warning(disable: 4996)
+
+struct enemyData
+{
+    char name[100];
+    float strength;
+    float magic;
+    struct enemyData * next;
+};
+typedef struct enemyData enemy;
+
+void traverse(enemy *head, enemy *p)
+{ 
+    p = head -> next;
+    while (p != NULL)
+    {
+        printf("名字:%s\n", p->name);
+        printf("攻击力:%f\n", p->strength);
+        printf("法强:%f\n", p->magic);
+        p = p->next;
+    }
+}
+void add(enemy *tail, enemy *p)
+{
+    p = (enemy *)malloc(sizeof(enemy));
+        printf("请输入敌人名字:");
+        scanf("%s", p->name);
+        printf("请输入敌人攻击力:");
+        scanf("%f", &p->strength);
+        printf("请输入敌人法强:");
+        scanf("%f", &p->magic);
+        tail -> next = p;
+        tail = p;
+        tail -> next = NULL;
+}
+void deleteEnemy(enemy *head, enemy *p)
+{
+    char name[100];
+    printf("请输入要删除的敌人名字:");
+    scanf("%s", &name);
+    enemy *prev = head;
+    p = head -> next;
+    while (p != NULL)
+    {
+        if (strcmp(p->name, name) == 0)
+        {
+            prev->next = p->next;
+            free(p);
+            printf("删除成功\n");
+            return;
+        }
+        else
+        {
+            p = p->next;
+        }
+    }
+}
+
+void  commandSystem(enemy *head, enemy *p, enemy *tail)
+{
+    printf("------------------------------------------------------------\n");
+    char command[100];
+    printf("请输入指令:");
+    scanf("%s", command);
+    if (strcmp(command, "/traverse") == 0)
+    {
+        traverse(head, p);
+    }
+    else if (strcmp(command, "/add") == 0)
+    {
+        add(tail, p);
+    }
+    else if (strcmp(command, "/delete") == 0)
+    {
+        deleteEnemy(head, p);
+    }
+    else if (strcmp(command, "/exit") == 0)
+    {
+        printf("退出程序\n");
+        return;
+    }
+    else
+    {
+        printf("指令错误\n");
+    }
+    commandSystem(head, p,tail);
+}
+
+
+int main()
+{
+    enemy *p,*head,*tail ;
+    p = (enemy *)malloc(sizeof(enemy));
+    head = p;
+    tail = p;
+    head -> next = NULL;
+    for (int i = 0; i < 2; i++)
+    { 
+        p = (enemy *)malloc(sizeof(enemy));
+        printf("请输入敌人名字:");
+        scanf("%s", p->name);
+        printf("请输入敌人攻击力:");
+        scanf("%f", &p->strength);
+        printf("请输入敌人法强:");
+        scanf("%f", &p->magic);
+        tail -> next = p;
+        tail = p;
+        tail -> next = NULL;
+    }
+    commandSystem(head, p,tail);
+
+}
